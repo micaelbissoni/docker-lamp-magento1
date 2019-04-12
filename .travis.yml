@@ -1,0 +1,207 @@
+###
+### Enable Python support
+###
+language: python
+
+###
+### Enable sudo (required for docker service)
+###
+sudo: required
+
+
+###
+### Attach services
+###
+services:
+  - docker
+
+
+###
+### Specify combinations
+###
+env:
+  ###
+  ### Check Documentation
+  ###
+  - S1=DOCUMENTATION
+
+  ###
+  ### Update script
+  ###
+  - S1=UPDATE V1=php
+  - S1=UPDATE V1=httpd
+  - S1=UPDATE V1=mysql
+  - S1=UPDATE V1=rest
+
+  ###
+  ### The matrix specifies 2 versions to compare against each other.
+  ### As PHP (any version) needs to be able to run with everything,
+  ### I am going to test any PHP version against any other service.
+  ###
+  ###
+  ### PHP vs WWW
+  ###
+  # PHP vs Apache 2.2
+  - S1=PHP V1=5.3 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=5.4 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=5.5 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=5.6 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=7.0 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=7.1 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=7.2 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=7.3 S2=HTTPD V2=apache-2.2
+  - S1=PHP V1=7.4 S2=HTTPD V2=apache-2.2
+  # PHP vs Apache 2.4
+  - S1=PHP V1=5.3 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=5.4 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=5.5 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=5.6 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=7.0 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=7.1 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=7.2 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=7.3 S2=HTTPD V2=apache-2.4
+  - S1=PHP V1=7.4 S2=HTTPD V2=apache-2.4
+  # PHP vs Nginx stable
+  - S1=PHP V1=5.3 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=5.4 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=5.5 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=5.6 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=7.0 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=7.1 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=7.2 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=7.3 S2=HTTPD V2=nginx-stable
+  - S1=PHP V1=7.4 S2=HTTPD V2=nginx-stable
+  # PHP vs Nginx mainline
+  - S1=PHP V1=5.3 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=5.4 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=5.5 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=5.6 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=7.0 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=7.1 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=7.2 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=7.3 S2=HTTPD V2=nginx-mainline
+  - S1=PHP V1=7.4 S2=HTTPD V2=nginx-mainline
+
+  ###
+  ### MYSQL
+  ###
+  - S1=PHP V1=7.2 S2=MYSQL V2=mysql-5.5
+  - S1=PHP V1=7.2 S2=MYSQL V2=mysql-5.6
+  - S1=PHP V1=7.2 S2=MYSQL V2=mysql-5.7
+  - S1=PHP V1=7.2 S2=MYSQL V2=mysql-8.0
+  - S1=PHP V1=7.2 S2=MYSQL V2=mariadb-5.5
+  - S1=PHP V1=7.2 S2=MYSQL V2=mariadb-10.0
+  - S1=PHP V1=7.2 S2=MYSQL V2=mariadb-10.1
+  - S1=PHP V1=7.2 S2=MYSQL V2=mariadb-10.2
+  - S1=PHP V1=7.2 S2=MYSQL V2=mariadb-10.3
+  - S1=PHP V1=7.2 S2=MYSQL V2=percona-5.5
+  - S1=PHP V1=7.2 S2=MYSQL V2=percona-5.6
+  - S1=PHP V1=7.2 S2=MYSQL V2=percona-5.7
+
+  ###
+  ### PostgreSQL
+  ###
+  - S1=PHP V1=7.2 S2=PGSQL V2=9.2
+  - S1=PHP V1=7.2 S2=PGSQL V2=9.3
+  - S1=PHP V1=7.2 S2=PGSQL V2=9.4
+  - S1=PHP V1=7.2 S2=PGSQL V2=9.5
+  - S1=PHP V1=7.2 S2=PGSQL V2=9.6
+  - S1=PHP V1=7.2 S2=PGSQL V2=10.0
+
+
+###
+### Installation
+###
+install:
+  # Install dependencies for documentation
+  - if [ "${S1}" = "DOCUMENTATION" ]; then
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if pip install sphinx; then break; else i=$((i+1)); fi
+      done;
+
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if pip install sphinx-autobuild; then break; else i=$((i+1)); fi
+      done;
+
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if pip install recommonmark; then break; else i=$((i+1)); fi
+      done;
+
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if pip install sphinx_rtd_theme; then break; else i=$((i+1)); fi
+      done;
+    fi
+
+  # Install dependencies for docker/docker-compose
+  - if [ "${S1}" != "DOCUMENTATION" ]; then
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if sudo apt-get update; then break; else i=$((i+1)); fi
+      done;
+
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce; then break; else i=$((i+1)); fi
+      done;
+
+      max=100; i=0;
+      while [ $i -lt $max ]; do
+        if curl -L --retry 100 --retry-max-time 0 https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > docker-compose; then break; else i=$((i+1)); fi
+      done;
+
+      chmod +x docker-compose;
+      sudo mv -f docker-compose /usr/local/bin;
+    fi
+
+
+###
+### Before Script
+###
+before_script:
+  # Disable services enabled by default
+  # http://docs.travis-ci.com/user/database-setup/#MySQL
+  - sudo /etc/init.d/mysql      stop || true
+  - sudo /etc/init.d/postgresql stop || true
+  - sudo /etc/init.d/memcached  stop || true
+  - sudo /etc/init.d/redis      stop || true
+  - sudo /etc/init.d/mongodb    stop || true
+
+  - sudo service mysql      stop || true
+  - sudo service postgresql stop || true
+  - sudo service memcached  stop || true
+  - sudo service redis      stop || true
+  - sudo service mongodb    stop || true
+  - netstat -tulpn
+
+  # Show Python/pip
+  - if [ "${S1}" = "DOCUMENTATION" ]; then
+      pip freeze;
+      pip --version;
+      python --version;
+    fi
+
+  # Show Docker/Docker Compose
+  - if [ "${S1}" != "DOCUMENTATION" ]; then
+      docker --version;
+      docker-compose --version;
+    fi
+
+
+###
+### Test
+###
+script:
+  - if [ "${S1}" = "DOCUMENTATION" ]; then
+        cd docs/;
+        make build;
+        make linkcheck;
+        make linkcheck2;
+    elif [ "${S1}" = "UPDATE" ]; then
+        ./update-docker.sh "${V1}";
+    else
+        .tests/test_single.sh . "${S1}" "${V1}" "${S2}" "${V2}";
+    fi
