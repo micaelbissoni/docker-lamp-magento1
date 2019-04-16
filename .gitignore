@@ -22,6 +22,8 @@
 /data/pgsql/*
 /data/rabbit/*
 /data/www/*
+!configurar_projeto.sh
+
 
 # Ignore Certificate Authority
 /ca/*
