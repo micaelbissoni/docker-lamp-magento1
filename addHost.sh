@@ -6,11 +6,16 @@ function addHost(){
 	else
 		sudo echo "127.0.0.1 ${NOME_PROJETO}.io" >> /etc/hosts;
 	fi
-	cd data/www/${NOME_PROJETO}
-	echo "htdocs" >> .gitignore;
-	git commit -am "Ignorar htdocs do docker."                                                                                                                      
-	ln -s ./ htdocs
-	cd ../../
+
+	if grep -q "^htdocs" data/www/${NOME_PROJETO}/.gitignore; then
+		echo "htdocs ${NOME_PROJETO} just ignored!!"
+	else
+		cd data/www/${NOME_PROJETO}
+		ln -s ./ htdocs;
+		printf '\nhtdocs' >> .gitignore;
+		git commit -am "Ignorar htdocs do docker."                                                                                                                      
+		cd ../../
+	fi
 }
 
 addHost "$@"
